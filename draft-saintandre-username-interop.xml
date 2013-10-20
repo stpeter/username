@@ -8,7 +8,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="2"?>
 
-<rfc category="info" ipr="trust200902" docName="draft-saintandre-username-interop-01">
+<rfc category="info" ipr="trust200902" docName="draft-saintandre-username-interop-02">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -51,7 +51,7 @@
     </section>
 
     <section title="Subset" anchor="subset">
-      <t>To define an interoperable subset of characters for local parts of application identifiers, this document subclasses the PRECIS IdentifierClass specified in <xref target='I-D.ietf-precis-framework'/>.  In essence, the IdentifierClass restricts the allowable characters to lettersand digits from all the scripts of Unicode <xref target='UNICODE'/> while grandfathering in all the characters from the ASCII range <xref target='RFC20'/>.  The subclass defined here, "UsernameIdentifierClass", further restricts the characters from the ASCII range to those known to work across multiple application protocols (as described under <xref target='analysis'/>).</t>
+      <t>To define an interoperable subset of characters for local parts of application identifiers, this document specifies a profile of the PRECIS IdentifierClass specified in <xref target='I-D.ietf-precis-framework'/>.  In essence, the IdentifierClass restricts the allowable characters to letters and digits from all the scripts of Unicode <xref target='UNICODE'/> while grandfathering in all the characters from the ASCII range <xref target='RFC20'/>.  The profile defined here, "UsernameIdentifierClass", further restricts the characters from the ASCII range to those known to work across multiple application protocols (as described under <xref target='analysis'/>).</t>
       <t>The syntax is defined as follows using the Augmented Backus-Naur Form (ABNF) as specified in <xref target="RFC5234"/>.</t>
       <figure>
         <artwork><![CDATA[
@@ -59,12 +59,11 @@
          ;
          ; a "upoint" is a UTF-8 encoded Unicode code point 
          ; that conforms to the "UsernameIdentifierClass" 
-         ; subclass of the PRECIS IdentifierClass
+         ; profile of the PRECIS IdentifierClass
          ;
         ]]></artwork>
       </figure>
-      <t>A uname MUST NOT be zero octets in length and MUST NOT be more than 1023 octets in length.  This rule is to be enforced after any normalization and mapping of code points.</t>
-      <t>A uname MUST consist only of Unicode code points that conform to the "UsernameIdentifierClass" subclass of the "IdentifierClass" base string class defined in <xref target='I-D.ietf-precis-framework'/>.  The UsernameIdentifierClass subclass includes all code points allowed by the IdentifierClass base class, with the exception of the following characters, which are disallowed:</t>
+      <t>A uname MUST consist only of Unicode code points that conform to the "UsernameIdentifierClass" profile of the "IdentifierClass" base string class defined in <xref target='I-D.ietf-precis-framework'/>.  The UsernameIdentifierClass profile includes all code points allowed by the IdentifierClass base class, with the exception of the following characters, which are disallowed:</t>
       <t>
         <list style='hanging'>
           <t>U+0022 (QUOTATION MARK), i.e., '"'</t>
@@ -103,6 +102,7 @@
         </list>
       </t>
       <t>With regard to directionality, applications MUST apply the "Bidi Rule" defined in <xref target='RFC5893'/> (i.e., each of the six conditions of the Bidi Rule must be satisfied).</t>
+      <t>A uname MUST NOT be zero octets in length and MUST NOT be more than 1023 octets in length.  This rule is to be enforced after any normalization and mapping of code points.</t>
     </section>
 
     <section title="Security Considerations" anchor="security">
@@ -110,12 +110,20 @@
     </section>
 
     <section title="IANA Considerations" anchor="iana">
-      <t>The IANA shall add the following entry to the PRECIS Subclass Registry:</t>
+      <t>The IANA shall add the following entry to the PRECIS Profiles Registry:</t>
       <t>
         <list style='hanging'>
-          <t hangText='Subclass:'>UsernameIdentifierClass.</t>
+          <t hangText='Name:'>UsernameIdentifierClass.</t>
+          <t hangText='Applicability:'>Usernames that are intended to be interoperable across multiple application protocols.</t>
           <t hangText='Base Class:'>IdentifierClass.</t>
+          <t hangText='Replaces:'>None.</t>
+          <t hangText='Width Mapping:'>Map fullwidth and halfwidth characters to their decomposition equivalents.</t>
+          <t hangText='Additional Mappings:'>None required or recommended.</t>
+          <t hangText='Case Mapping:'>Map uppercase and titlecase characters to lowercase.</t>
+          <t hangText='Normalization:'>NFC.</t>
+          <t hangText='Directionality:'>The "Bidi Rule" defined in RFC 5893 applies.</t>
           <t hangText='Exclusions:'>24 non-alphanumeric characters in the ASCII range.</t>
+          <t hangText='Enforcement:'>Up to the application protocol or deployment.</t>
           <t hangText='Specification:'>RFC XXXX. [Note to RFC Editor: please change XXXX to the number issued for this specification.]</t>
         </list>
       </t>
@@ -136,12 +144,12 @@
 <author initials='M' surname='Blanchet' fullname='Marc Blanchet'>
     <organization>Viagenie</organization>
 </author>
-<date month='July' day='10' year='2013' />
-<abstract><t>Application protocols using Unicode code points in protocol strings need to properly prepare such strings in order to perform valid comparison operations (e.g., for purposes of authentication or authorization).  This document defines a framework enabling application protocols to perform the preparation and comparison of internationalized strings (a.k.a.  "PRECIS") in a way that depends on the properties of Unicode code points and thus is agile with respect to versions of Unicode.  As a result, this framework provides a more sustainable approach to the handling of internationalized strings than the previous framework, known as Stringprep (RFC 3454).  A specification that reuses this framework can either directly use the PRECIS string classes or subclass the PRECIS string classes as needed.  This framework takes an approach similar to the revised internationalized domain names (IDNs) in applications (IDNA) technology (RFC 5890, RFC 5891, RFC 5892, RFC 5893, RFC 5894) and thus adheres to the high-level design goals described in the IAB's recommendations regarding IDNs (RFC 4690), albeit for application technologies other than the Domain Name System (DNS).  This document obsoletes RFC 3454.</t></abstract>
+<date month='October' day='18' year='2013' />
+<abstract><t>Application protocols using Unicode code points in protocol strings need to properly prepare such strings in order to perform valid comparison operations (e.g., for purposes of authentication or authorization).  This document defines a framework enabling application protocols to perform the preparation and comparison of internationalized strings (a.k.a.  "PRECIS") in a way that depends on the properties of Unicode code points and thus is agile with respect to versions of Unicode.  As a result, this framework provides a more sustainable approach to the handling of internationalized strings than the previous framework, known as Stringprep (RFC 3454).  This document obsoletes RFC 3454.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-precis-framework-09' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-precis-framework-11' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-framework-09.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-framework-11.txt' />
 </reference>
 
 <reference anchor='I-D.ietf-precis-mappings'>
@@ -153,12 +161,12 @@
 <author initials='T' surname='NEMOTO' fullname='Takahiro NEMOTO'>
     <organization />
 </author>
-<date month='May' day='24' year='2013' />
+<date month='October' day='18' year='2013' />
 <abstract><t>Preparation and comparison of internationalized strings ("precis") framework [I-D.ietf-precis-framework] is defining several classes of strings for preparation and comparison.  In the document, case mapping is defined because many of protocols handle case sensitive or case insensitive string comparison and therefore preparation of string is mandatory.  As described in IDNA mapping [RFC5895] and precis problem statement [I-D.ietf-precis-problem-statement], mappings in internationalized strings are not limited to case, but also width, delimiters and/or other specials are taken into consideration.  This document is a guideline for authors of protocol profiles of precis framework and describes the mappings, that may be performed before precis framework, that must be considered between receiving user input and passing permitted code points to internationalized protocols.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-precis-mappings-02' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-precis-mappings-04' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-mappings-02.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-mappings-04.txt' />
 </reference>
 
 <reference anchor='RFC20'>
