@@ -8,33 +8,32 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="2"?>
 
-<rfc category="info" ipr="trust200902" docName="draft-saintandre-username-interop-02">
+<rfc category="info" ipr="trust200902" docName="draft-saintandre-username-interop-03">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
   <front>
 
-    <title abbrev="Username Interoperability">Username Interoperability</title>
+    <title abbrev="Username Interoperability">An Interoperable Subset of Characters for Internationalized Usernames</title>
 
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
-      <organization>Cisco Systems, Inc.</organization>
+      <organization>&amp;yet</organization>
       <address>
         <postal>
-          <street>1899 Wynkoop Street, Suite 600</street>
-          <city>Denver</city>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
           <region>CO</region>
-          <code>80202</code>
+          <code>80134</code>
           <country>USA</country>
         </postal>
-        <phone>+1-303-308-3282</phone>
-        <email>psaintan@cisco.com</email>
+        <email>ietf@stpeter.im</email>
       </address>
     </author>
 
     <date/>
 
     <abstract>
-      <t>Various Internet protocols define constructs for usernames, i.e., the local part of an address such as "localpart@example.com".  This document describes a subset of characters to allow in usernames for maximal interoperability across Internet protocols.  The subset might prove useful in cases where a provider offers multiple services using the same underlying identifier.</t>
+      <t>Various Internet protocols define constructs for usernames, i.e., the localpart of an address such as "localpart@example.com".  This document describes a subset of Unicode characters to allow in internationalized usernames for the sake of maximal interoperability across Internet protocols.</t>
     </abstract>
 
   </front>
@@ -42,7 +41,7 @@
   <middle>
 
     <section title="Introduction" anchor="intro">
-      <t>Various Internet protocols define constructs for usernames, i.e., the local part of an address such as "localpart@example.com".  This document describes a subset of characters to allow in usernames for maximal interoperability across Internet protocols.  The subset might prove useful in cases where a provider offers multiple services using the same underlying identifier.</t>
+      <t>Various Internet protocols define constructs for usernames, i.e., the localpart of an address such as "localpart@example.com".  As further described under <xref target='analysis'/>), examples include the localparts of email addresses, Kerberos Principal Names, Network Access Identifiers, SIP URIs, instant messaging URIs and presence URIs, XMPP addresses, and account URIs, as well as certain forms of SASL simple user names (see <xref target='I-D.ietf-precis-saslprepbis'/>).  This document describes a subset of Unicode characters <xref target='UNICODE'/> to allow in internationalized usernames for the sake of maximal interoperability across Internet protocols.  This subset might prove useful in cases where a provider offers multiple services (say, email and instant messaging) using the same underlying identifier, or where the same identifier (e.g., an account URI) is used when interacting with multiple providers.</t>
     </section>
 
     <section title="Terminology" anchor="terms">
@@ -51,19 +50,18 @@
     </section>
 
     <section title="Subset" anchor="subset">
-      <t>To define an interoperable subset of characters for local parts of application identifiers, this document specifies a profile of the PRECIS IdentifierClass specified in <xref target='I-D.ietf-precis-framework'/>.  In essence, the IdentifierClass restricts the allowable characters to letters and digits from all the scripts of Unicode <xref target='UNICODE'/> while grandfathering in all the characters from the ASCII range <xref target='RFC20'/>.  The profile defined here, "UsernameIdentifierClass", further restricts the characters from the ASCII range to those known to work across multiple application protocols (as described under <xref target='analysis'/>).</t>
+      <t>The interoperable subset of characters provided here is defined as a profile of the PRECIS IdentifierClass specified in <xref target='I-D.ietf-precis-framework'/>.  In essence, the IdentifierClass restricts the allowable characters to letters and digits from all the scripts of Unicode <xref target='UNICODE'/> while grandfathering all the characters from the ASCII range <xref target='RFC20'/>.  The profile defined here, "LocalpartIdentifierClass", further restricts the characters from the ASCII range to those known to work across existing application protocols (as described under <xref target='analysis'/>).</t>
       <t>The syntax is defined as follows using the Augmented Backus-Naur Form (ABNF) as specified in <xref target="RFC5234"/>.</t>
       <figure>
         <artwork><![CDATA[
-   uname = 1*1023(upoint)
-         ;
-         ; a "upoint" is a UTF-8 encoded Unicode code point 
-         ; that conforms to the "UsernameIdentifierClass" 
-         ; profile of the PRECIS IdentifierClass
-         ;
+   localpart = 1*1023(localpoint)
+             ;
+             ; a "localpoint" is a UTF-8 encoded Unicode code point 
+             ; that conforms to the "LocalpartIdentifierClass" 
+             ; profile of the PRECIS IdentifierClass
         ]]></artwork>
       </figure>
-      <t>A uname MUST consist only of Unicode code points that conform to the "UsernameIdentifierClass" profile of the "IdentifierClass" base string class defined in <xref target='I-D.ietf-precis-framework'/>.  The UsernameIdentifierClass profile includes all code points allowed by the IdentifierClass base class, with the exception of the following characters, which are disallowed:</t>
+      <t>A "localpart" MUST consist only of Unicode code points that conform to the "LocalpartIdentifierClass" profile of the "IdentifierClass" base string class defined in <xref target='I-D.ietf-precis-framework'/>.  The LocalpartIdentifierClass profile includes all code points allowed by the IdentifierClass base class, with the exception of the following characters, which are disallowed (again, see <xref target='analysis'/> for the reasoning behind these restrictions):</t>
       <t>
         <list style='hanging'>
           <t>U+0022 (QUOTATION MARK), i.e., '"'</t>
@@ -92,41 +90,43 @@
           <t>U+007D (RIGHT CURLY BRACKET), i.e., '}'</t>
         </list>
       </t>
-      <t>The normalization and mapping rules for the UsernameIdentifierClass are as follows, where the operations specified MUST be completed in the order shown:</t>
+      <t>The normalization and mapping rules for the LocalpartIdentifierClass are as follows, where the operations specified MUST be completed in the order shown:</t>
       <t>
         <list style='numbers'>
-          <t>Fullwidth and halfwidth characters MUST be mapped to their decomposition equivalents.<vspace blankLines='1'/></t>
-          <t>So-called additional mappings MAY be applied, such as those defined in <xref target='I-D.ietf-precis-mappings'/>.<vspace blankLines='1'/></t>
-          <t>Uppercase and titlecase characters MUST be mapped to their lowercase equivalents.<vspace blankLines='1'/></t>
-          <t>All characters MUST be mapped using Unicode Normalization Form C (NFC).<vspace blankLines='1'/></t>
+          <t>Fullwidth and halfwidth characters MUST be mapped to their decomposition mappings.</t>
+          <t>So-called additional mappings MAY be applied, such as mapping of characters that are similar to common delimiters (such as '@', ':', '/', '+', '-', and '.', e.g., mapping of IDEOGRAPHIC FULL STOP (U+3002) to FULL STOP (U+002E)) and special handling of certain characters or classes of characters (e.g., mapping of non-ASCII spaces to ASCII space); the PRECIS mappings document <xref target='I-D.ietf-precis-mappings'/> describes such mappings in more detail.</t>
+          <t>Uppercase and titlecase characters MUST be mapped to their lowercase equivalents.</t>
+          <t>All characters MUST be mapped using Unicode Normalization Form C (NFC).</t>
         </list>
       </t>
       <t>With regard to directionality, applications MUST apply the "Bidi Rule" defined in <xref target='RFC5893'/> (i.e., each of the six conditions of the Bidi Rule must be satisfied).</t>
-      <t>A uname MUST NOT be zero octets in length and MUST NOT be more than 1023 octets in length.  This rule is to be enforced after any normalization and mapping of code points.</t>
-    </section>
-
-    <section title="Security Considerations" anchor="security">
-      <t>Deploying usernames that are interoperable across multiple protocols could potentially give malicious entities multiple ways to attack an account or user.</t>
+      <t>A localpart MUST NOT be zero octets in length and MUST NOT be more than 1023 octets in length.  This rule is to be enforced after any normalization and mapping of code points.</t>
     </section>
 
     <section title="IANA Considerations" anchor="iana">
       <t>The IANA shall add the following entry to the PRECIS Profiles Registry:</t>
       <t>
         <list style='hanging'>
-          <t hangText='Name:'>UsernameIdentifierClass.</t>
+          <t hangText='Name:'>LocalpartIdentifierClass.</t>
           <t hangText='Applicability:'>Usernames that are intended to be interoperable across multiple application protocols.</t>
           <t hangText='Base Class:'>IdentifierClass.</t>
           <t hangText='Replaces:'>None.</t>
-          <t hangText='Width Mapping:'>Map fullwidth and halfwidth characters to their decomposition equivalents.</t>
+          <t hangText='Width Mapping:'>Map fullwidth and halfwidth characters to their decomposition mappings.</t>
           <t hangText='Additional Mappings:'>None required or recommended.</t>
           <t hangText='Case Mapping:'>Map uppercase and titlecase characters to lowercase.</t>
           <t hangText='Normalization:'>NFC.</t>
           <t hangText='Directionality:'>The "Bidi Rule" defined in RFC 5893 applies.</t>
           <t hangText='Exclusions:'>24 non-alphanumeric characters in the ASCII range.</t>
           <t hangText='Enforcement:'>Up to the application protocol or deployment.</t>
-          <t hangText='Specification:'>RFC XXXX. [Note to RFC Editor: please change XXXX to the number issued for this specification.]</t>
+          <t hangText='Specification:'>this document. [Note to RFC Editor: please change "this document" to the RFC number issued for this specification.]</t>
         </list>
       </t>
+    </section>
+
+    <section title="Security Considerations" anchor="sec">
+      <t>Deploying usernames that are interoperable across multiple protocols could potentially give malicious entities multiple ways to attack an account or user.</t>
+      <t>The security considerations described in <xref target="I-D.ietf-precis-framework"/> apply to the "IdentifierClass" base string class used in this document.</t>
+      <t>The security considerations described in <xref target='UTS39'/> apply to the use of Unicode characters.</t>
     </section>
 
   </middle>
@@ -144,29 +144,12 @@
 <author initials='M' surname='Blanchet' fullname='Marc Blanchet'>
     <organization>Viagenie</organization>
 </author>
-<date month='October' day='18' year='2013' />
+<date month='March' day='14' year='2014' />
 <abstract><t>Application protocols using Unicode code points in protocol strings need to properly prepare such strings in order to perform valid comparison operations (e.g., for purposes of authentication or authorization).  This document defines a framework enabling application protocols to perform the preparation and comparison of internationalized strings (a.k.a.  "PRECIS") in a way that depends on the properties of Unicode code points and thus is agile with respect to versions of Unicode.  As a result, this framework provides a more sustainable approach to the handling of internationalized strings than the previous framework, known as Stringprep (RFC 3454).  This document obsoletes RFC 3454.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-precis-framework-11' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-precis-framework-15' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-framework-11.txt' />
-</reference>
-
-<reference anchor='I-D.ietf-precis-mappings'>
-<front>
-<title>Mapping characters for precis classes</title>
-<author initials='Y' surname='Yoneya' fullname='Yoshiro Yoneya'>
-    <organization />
-</author>
-<author initials='T' surname='NEMOTO' fullname='Takahiro NEMOTO'>
-    <organization />
-</author>
-<date month='October' day='18' year='2013' />
-<abstract><t>Preparation and comparison of internationalized strings ("precis") framework [I-D.ietf-precis-framework] is defining several classes of strings for preparation and comparison.  In the document, case mapping is defined because many of protocols handle case sensitive or case insensitive string comparison and therefore preparation of string is mandatory.  As described in IDNA mapping [RFC5895] and precis problem statement [I-D.ietf-precis-problem-statement], mappings in internationalized strings are not limited to case, but also width, delimiters and/or other specials are taken into consideration.  This document is a guideline for authors of protocol profiles of precis framework and describes the mappings, that may be performed before precis framework, that must be considered between receiving user input and passing permitted code points to internationalized protocols.</t></abstract>
-</front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-precis-mappings-04' />
-<format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-mappings-04.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-framework-15.txt' />
 </reference>
 
 <reference anchor='RFC20'>
@@ -250,21 +233,14 @@
 <format type='TXT' octets='38870' target='http://www.rfc-editor.org/rfc/rfc5893.txt' />
 </reference>
 
-<reference anchor="UNICODE">
+<reference anchor="UNICODE" target="http://www.unicode.org/versions/Unicode6.3.0/">
   <front>
-    <title>The Unicode Standard, Version 3.2.0</title>
+    <title>The Unicode Standard, Version 6.3</title>
     <author>
       <organization>The Unicode Consortium</organization>
     </author>
-    <date year="2000" />
+    <date year="2013" />
   </front>
-  <annotation>
-    The Unicode Standard, Version 3.2.0 is defined by The Unicode Standard,
-Version 3.0 (Reading, MA, Addison-Wesley, 2000. ISBN 0-201-61633-5), as amended
-by the Unicode Standard Annex #27: Unicode 3.1
-(http://www.unicode.org/reports/tr27/) and by the Unicode Standard Annex #28:
-Unicode 3.2 (http://www.unicode.org/reports/tr28/). 
-  </annotation>
 </reference>
 
     </references>
@@ -277,12 +253,46 @@ Unicode 3.2 (http://www.unicode.org/reports/tr28/).
 <author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
     <organization />
 </author>
-<date month='July' day='2' year='2013' />
+<date month='January' day='23' year='2014' />
 <abstract><t>This document defines the 'acct' URI scheme as a way to identify a user's account at a service provider, irrespective of the particular protocols that can be used to interact with the account.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-appsawg-acct-uri-06' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-appsawg-acct-uri-07' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-appsawg-acct-uri-06.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-appsawg-acct-uri-07.txt' />
+</reference>
+
+<reference anchor='I-D.ietf-precis-mappings'>
+<front>
+<title>Mapping characters for PRECIS classes</title>
+<author initials='Y' surname='Yoneya' fullname='Yoshiro Yoneya'>
+    <organization />
+</author>
+<author initials='T' surname='NEMOTO' fullname='Takahiro NEMOTO'>
+    <organization />
+</author>
+<date month='February' day='13' year='2014' />
+<abstract><t>The framework for preparation and comparison of internationalized strings ("PRECIS") defines several classes of strings for preparation and comparison.  Case mapping is defined because many protocols perform case-sensitive or case-insensitive string comparison and so preparation of the string is mandatory.  The Internationalized Domain Names in Applications (IDNA) and the PRECIS problem statement describes mappings for internationalized strings that are not limited to case, but include width mapping and mapping of delimiters and other specials that can be taken into consideration.  This document provides guidelines for authors of protocol profiles of the PRECIS framework and describes several mappings that can be applied between receiving user input and passing permitted code points to internationalized protocols.  The mappings described here are expected to be applied as an additional mapping and alternative to Unicode Default Case Folding as case mapping in the PRECIS framework.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-ietf-precis-mappings-07' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-mappings-07.txt' />
+</reference>
+
+<reference anchor='I-D.ietf-precis-saslprepbis'>
+<front>
+<title>Preparation and Comparison of Internationalized Strings Representing Usernames and Passwords</title>
+<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
+    <organization />
+</author>
+<author initials='A' surname='Melnikov' fullname='Alexey Melnikov'>
+    <organization />
+</author>
+<date month='March' day='24' year='2014' />
+<abstract><t>This document describes methods for handling Unicode strings representing usernames and passwords.  This document obsoletes RFC 4013.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-ietf-precis-saslprepbis-07' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-ietf-precis-saslprepbis-07.txt' />
 </reference>
 
 <reference anchor='RFC821'>
@@ -537,6 +547,16 @@ other RFCs.</t></abstract></front>
 <format type='TXT' octets='103155' target='http://www.rfc-editor.org/rfc/rfc6365.txt' />
 </reference>
 
+<reference anchor="UTS39" target='http://unicode.org/reports/tr39/'>
+  <front>
+    <title>Unicode Technical Standard #39: Unicode Security Mechanisms</title>
+    <author>
+      <organization>The Unicode Consortium</organization>
+    </author>
+    <date month="July" year="2012" />
+  </front>
+</reference>
+
     </references>
 
     <section title="Analysis" anchor="analysis">
@@ -552,8 +572,8 @@ other RFCs.</t></abstract></front>
           <t>Account URIs <xref target='I-D.ietf-appsawg-acct-uri'/></t>
         </list>
       </t>
-      <t>Each of those address formats defines something that can be used as the "local part" of an address.</t>
-      <t>The local part of an email address uses either the "local-part" or the "dot-atom-text" rule in <xref target='RFC5322'/>.  Here we make the simplifying assumption that the "dot-atom-text" rule applies:</t>
+      <t>Each of those address formats defines something that can be used as the "localpart" of an address.</t>
+      <t>The localpart of an email address uses either the "local-part" or the "dot-atom-text" rule in <xref target='RFC5322'/>.  Here we make the simplifying assumption that the "dot-atom-text" rule applies:</t>
       <figure>
         <artwork><![CDATA[
    dot-atom-text =  1*atext *("." 1*atext)
@@ -623,7 +643,7 @@ other RFCs.</t></abstract></front>
    x           =  %x00-FF ; all 128 ASCII characters
         ]]></artwork>
       </figure>
-      <t>The local part of a sip:/sips: URI inherits from the "userinfo" rule in <xref target="RFC3986"/> with several changes; here we discuss the SIP "user" rule only:</t>
+      <t>The localpart of a sip:/sips: URI inherits from the "userinfo" rule in <xref target="RFC3986"/> with several changes; here we discuss the SIP "user" rule only:</t>
       <figure>
         <artwork><![CDATA[
    user             =  1*( unreserved / escaped / user-unreserved )
@@ -633,16 +653,16 @@ other RFCs.</t></abstract></front>
                        / "(" / ")"
         ]]></artwork>
       </figure>
-      <t>The local part of an XMPP address allows any ASCII character except space, controls, and the " &amp; ' / : &lt; &gt; @ characters.</t>
+      <t>The localpart of an XMPP address allows any ASCII character except space, controls, and the " &amp; ' / : &lt; &gt; @ characters.</t>
         <t>The 'acct' URI syntax borrows the 'host', 'pct-encoded', 'sub-delims', 'unreserved' rules from <xref target='RFC3986'/>:</t>
         <figure>
           <artwork><![CDATA[
-acctURI      =  "acct" ":" userpart "@" host
-userpart     =  unreserved / sub-delims
-                0*( unreserved / pct-encoded / sub-delims )
+   acctURI      =  "acct" ":" userpart "@" host
+   userpart     =  unreserved / sub-delims
+                   0*( unreserved / pct-encoded / sub-delims )
           ]]></artwork>
         </figure>
-      <t>To summarize the foregoing information, the following table lists the allowed and disallowed characters in the local part of identifiers for each protocol (aside from the alphanumeric, space, and control characters), in order by hexadecimal character number (where each "A" row shows the allowed characters and each "D" row shows the disallowed characters).</t>
+      <t>To summarize the foregoing information, the following table lists the allowed and disallowed characters in the localpart of identifiers for each protocol (aside from the alphanumeric, space, and control characters), in order by hexadecimal character number (where each "A" row shows the allowed characters and each "D" row shows the disallowed characters).</t>
       <figure>
         <preamble>Table 1: Allowed and Disallowed Characters (Non-Alphanumeric)</preamble>
         <artwork><![CDATA[
